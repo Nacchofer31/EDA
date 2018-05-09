@@ -30,8 +30,9 @@ public class ABB<E extends Comparable<E>> {
      * @param v Array con los elementos a insertar en el ABB
      */
     public ABB(E[] v) {
-
-        // COMPLETAR       
+        // COMPLETAR   
+        Ordenacion.quickSort(v);
+        raiz = construirEquilibrado(v,0,v.length-1);
     }
 
     /**
@@ -42,6 +43,18 @@ public class ABB<E extends Comparable<E>> {
      * @return Raiz del subárbol
      */
     protected NodoABB<E> construirEquilibrado(E[] v, int ini, int fin) {
+        int m = (ini+fin) / 2;
+        NodoABB<E> aux = null;
+        
+        if(ini>fin){
+            return aux;
+        }
+        
+        aux = new NodoABB<>(v[m]);
+        aux.der = construirEquilibrado(v,m+1,fin);
+        aux.izq = construirEquilibrado(v,ini,m-1);
+        
+        aux.talla = 1 + talla(aux.izq) + talla(aux.der);
         return null;
     }
 
@@ -50,8 +63,9 @@ public class ABB<E extends Comparable<E>> {
      * equilibrado        
      */
     public void reconstruirEquilibrado() {
-
         // COMPLETAR        
+        E[] v = toArrayInOrden();
+        raiz = construirEquilibrado(v,0,v.length-1);
     }
 
     /**
