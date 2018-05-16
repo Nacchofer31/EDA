@@ -55,7 +55,7 @@ public class ABB<E extends Comparable<E>> {
         aux.izq = construirEquilibrado(v,ini,m-1);
         
         aux.talla = 1 + talla(aux.izq) + talla(aux.der);
-        return null;
+        return aux;
     }
 
     /** 
