@@ -28,6 +28,12 @@ public class GrafoNoDirigido extends GrafoDirigido {
      */
     public GrafoNoDirigido(int numV, Arista[] arcos) { 
         // COMPLETAR
+        super(numV);
+        esDirigido = false;
+        for(int i=0; i<arcos.length; i++){
+            Arista arista = arcos[i];
+            insertarArista(arista.getOrigen(),arista.getDestino(),arista.getPeso());
+        }
     }
     
     /** Si no esta, inserta la arista (i, j) en un grafo No Dirigido  

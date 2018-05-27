@@ -2,8 +2,12 @@ package librerias.estructurasDeDatos.grafos;
 
 import librerias.estructurasDeDatos.modelos.Cola;
 import librerias.estructurasDeDatos.modelos.ListaConPI;
+import librerias.estructurasDeDatos.modelos.ColaPrioridad;
+import librerias.estructurasDeDatos.jerarquicos.PriorityQColaPrioridad;
 import librerias.estructurasDeDatos.lineales.LEGListaConPI;
 import librerias.estructurasDeDatos.lineales.ArrayCola;
+import librerias.estructurasDeDatos.modelos.MFSet;
+import librerias.estructurasDeDatos.jerarquicos.ForestMFSet;
 
 /** Clase abstracta Grafo: Base de la jerarquia Grafo, que define el 
  *  comportamiento de un grafo.<br> 
@@ -147,6 +151,34 @@ public abstract class Grafo {
      */ 
     public Arista[] arbolRecubrimientoBFS() {
         // COMPLETAR
+        Arista[] res = new Arista[numVertices()-1];
+        visitados = new int[numVertices()];
+        int auxVis = 0;
+        q = new ArrayCola<Integer>();
+        res = arbolRecubrimientoBFS(auxVis, res);
+        for(int i = 0;i < visitados.length; i++) 
+        if (visitados[i] == 0) return null;
+        
+        return res;
+    }
+    
+    protected Arista[] arbolRecubrimientoBFS(int raiz, Arista[] res){
+        visitados[raiz] = 1;
+        q.encolar(raiz);
+        while(!q.esVacia()){
+            int u = q.desencolar().intValue();
+            ListaConPI<Adyacente> l = adyacentesDe(u);
+            for(l.inicio();!l.esFin();l.siguiente()){
+                Adyacente ady = l.recuperar();
+                if (visitados[ady.destino] == 0){
+                    res[ordenVisita++] = new Arista(u,ady.getDestino(),ady.getPeso());
+                    visitados[ady.destino]=1;
+                    q.encolar(ady.destino);
+                }
+            }
+        }
+        
+        return res;
     }
     
     /** PRECONDICION: !this.esDirigido()
@@ -160,6 +192,33 @@ public abstract class Grafo {
      */  
     public Arista[] kruskal() {       
         // COMPLETAR EN LA SEGUNDA SESION
-        return null;
+        int aux = 0;
+        Arista[] res = new Arista[numVertices()-1];
+        ColaPrioridad<Arista> aristasFactibles = new PriorityQColaPrioridad<Arista>();
+        
+        MFSet mfset = new ForestMFSet(numVertices());
+        aristasFactibles = getAristasFactiblesKruskal();
+        
+        while (aux<numVertices()-1 && !aristasFactibles.esVacia()){
+            Arista arista = aristasFactibles.eliminarMin();
+            if(mfset.find(arista.getOrigen()) != mfset.find(arista.getDestino())){
+                mfset.merge(arista.getOrigen(),arista.getDestino());
+                res[aux++]=arista;
+            }
+        }
+        return (aux == numVertices()-1) ? res : null;
+    }
+    
+    private ColaPrioridad<Arista> getAristasFactiblesKruskal() {
+        ColaPrioridad<Arista> aristasFactibles = new PriorityQColaPrioridad<>();
+        
+        for(int i = 0; i<numVertices();i++) {
+            ListaConPI<Adyacente> l = adyacentesDe(i);
+            for(l.inicio(); !l.esFin(); l.siguiente()) {
+                Adyacente ady = l.recuperar();
+                aristasFactibles.insertar(new Arista(i,ady.getDestino(),ady.getPeso()));
+            }
+        }
+        return aristasFactibles;
     }
 }
