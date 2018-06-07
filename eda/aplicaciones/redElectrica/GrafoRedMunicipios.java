@@ -208,15 +208,16 @@ public class GrafoRedMunicipios {
         // del Map verticesAMunicipios
         // COMPLETAR
         double res=0;
+        adyKruskal = new TablaHash<Municipio,ListaConPI<Municipio>>(aristas.length);
         for(int i=0;i<aristas.length;i++){
             Arista a = aristas[i];
+            res = res +a.getPeso();
             ListaConPI<Municipio> municipios = adyKruskal.recuperar(verticesAMunicipios.recuperar(a.getOrigen()));
             if(municipios == null){
                 municipios = new LEGListaConPI<Municipio>();
-                adyKruskal.insertar(verticesAMunicipios.recuperar(a.getOrigen()),municipios);
             }
+            adyKruskal.insertar(verticesAMunicipios.recuperar(a.getOrigen()),municipios);
             municipios.insertar(verticesAMunicipios.recuperar(a.getDestino()));
-            res = res +a.getPeso();
         }
       
         // (c) Devolver el coste total del tendido electrico, i.e.
